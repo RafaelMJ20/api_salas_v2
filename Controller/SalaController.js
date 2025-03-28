@@ -38,4 +38,39 @@ const unirseASala = async (req, res) => {
   }
 };
 
-module.exports = { crearSala, obtenerSalas, eliminarSala, unirseASala };
+const agregarMensaje = async (req, res) => {
+  try {
+    const { id } = req.params;  // ID de la sala
+    const { sender, text } = req.body;  // Datos del mensaje: quien lo envía y el texto
+
+    const mensajes = await SalasService.agregarMensaje(id, sender, text);
+
+    if (!mensajes) {
+      return res.status(404).json({ message: "Sala no encontrada" });
+    }
+
+    res.status(200).json(mensajes);  // Devolver los mensajes actualizados
+  } catch (error) {
+    console.error("Error al agregar el mensaje:", error);
+    res.status(500).json({ message: "Error al agregar el mensaje" });
+  }
+};
+
+const obtenerMensajes = async (req, res) => {
+  try {
+    const roomId = req.params.id;  // Obtener el id de la sala desde los parámetros de la URL
+
+    const mensajes = await SalasService.obtenerMensajes(roomId);
+
+    if (!mensajes) {
+      return res.status(404).json({ message: "Sala no encontrada" });
+    }
+
+    res.status(200).json(mensajes);  // Devolver los mensajes de la sala
+  } catch (error) {
+    console.error("Error obteniendo los mensajes:", error);
+    res.status(500).json({ message: "Error al obtener los mensajes" });
+  }
+};
+
+module.exports = { crearSala, obtenerSalas, eliminarSala, unirseASala, agregarMensaje, obtenerMensajes};
